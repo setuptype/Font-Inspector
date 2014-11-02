@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 # Font Inspector
-# 1.2
+# 1.2.1
 # (c) 2014 Ondrej Jób/Urtd
 # http://urtd.net/projects/fontinspector/
 # GPLv3
