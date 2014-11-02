@@ -30,6 +30,8 @@ def svg(g):
 		contour = end = ''
 		curve = False
 		points = c.points
+		if len(points) == 0:
+			continue
 
 		# RoboFont
 		if points[0].type == 'offCurve':
