@@ -1,9 +1,9 @@
 # Font Inspector
 
-Font Inspector is an analytics script for FontLab and RoboFont. 
+Font Inspector is an analytics script for FontLab and RoboFont 2. 
 It generates a comprehensive overview of design and metrics of all open fonts into a single HTML file.
 
-[View Example](http://www.urtd.net/x/fontinspector/FontInspector.html)
+[View Example](https://setuptype.com/x/fontinspector/FontInspector.html)
 
 ![Font Inspector image 1 of 3](font_inspector-01.png)
 ![Font Inspector image 2 of 3](font_inspector-02.png)
@@ -51,7 +51,7 @@ Grey color represents negative sidebearings.
 
 ## Disclaimer
 
-Font Inspector was made by [Ondrej Jób](http://www.urtd.net), who runs his type foundry [Urtd](http://www.urtd.net) from Bratislava, Slovakia.
+Font Inspector was made by [Ondrej Jób](https://www.setuptype.com), who runs his type foundry [Setup Type](https://www.setuptype.com) from Bratislava, Slovakia.
 
 Font Inspector is distributed under the [GNU General Public License 3.0](https://gnu.org/licenses/gpl.html). 
 For any application that may be incompatible with this license, please contact me to discuss alternatives.
