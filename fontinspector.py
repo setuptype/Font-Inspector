@@ -1,4 +1,4 @@
-#FLM: Font Inspector
+#FLM: Font Inspector - Glyphs Modificated
 # -*- coding: utf-8 -*-
 
 # Font Inspector
@@ -6,6 +6,10 @@
 # (c) 2014 Ondrej Jób/Urtd
 # http://urtd.net/projects/fontinspector/
 # GPLv3
+
+# - enable/disable interface update
+# - dont close open path automaticly
+# - open macro
 
 from robofab.world import *
 
@@ -28,6 +32,7 @@ def svg(g):
 	for i in range(len(contours)):
 		c = contours[i]
 		contour = end = ''
+		close = '' # add close
 		curve = False
 		points = c.points
 		if len(points) == 0:
@@ -60,8 +65,10 @@ def svg(g):
 				command = 'M'
 				if p.type == 'curve':
 					end = ' ' + str(p.x) + ' ' + str(p.y)
+				if p.type != 'move': ### closed poly has no p.type 'move'
+					close = 'z'		###
 			contour += ' ' + command + str(p.x) + ' ' + str(p.y)
-		svg += ' ' + contour + end + 'z'
+		svg += ' ' + contour + end + close
 	if font.has_key('fontinspector'):
 		font.removeGlyph('fontinspector')
 	return svg.strip()
@@ -83,6 +90,7 @@ def startPoints(g):
 
 		startPoints.append([points[0].x,points[0].y])
 	return startPoints
+
 def colorBot(color,inc):
 	if(len(color)==3): color = color[0] + color[0] + color[1] + color[1] + color[2] + color[2]
 	r = int(color[0:2],16)
@@ -98,6 +106,7 @@ def colorBot(color,inc):
 	if(len(g)==1): g = '0' + g
 	if(len(b)==1): b = '0' + b
 	return '#' + r + g + b
+
 def isSorted(list,reverse):
 	flag = ''
 	slist = sorted(list)
@@ -105,12 +114,15 @@ def isSorted(list,reverse):
 	for i in range(len(list)):
 		if list[i] != slist[i]: flag = ' warning'
 	return flag
+
 def drawLine(x1,y1,x2,y2):
 	return '<line class="ruler" x1="'+str(round(x1*scaleD)+0.5)+'" y1="'+str(round(y1*scaleD)+0.5)+'" x2="'+str(round(x2*scaleD)+0.5)+'" y2="'+str(round(y2*scaleD)+0.5)+'"/>'
+
 def drawSubLine(x1,y1,x2,y2):
 	return '<line class="ruler sub" x1="'+str(round(x1*scaleD)+0.5)+'" y1="'+str(round(y1*scaleD)+0.5)+'" x2="'+str(round(x2*scaleD)+0.5)+'" y2="'+str(round(y2*scaleD)+0.5)+'"/>'
 def drawThread(x1,y1,x2,y2,color):
 	return '<line stroke-dasharray="2,2" stroke="#'+color+'" x1="'+str(x1*scaleD)+'" y1="'+str(y1*scaleD)+'" x2="'+str(x2*scaleD)+'" y2="'+str(y2*scaleD)+'"/>'
+
 def drawAnchor(name,x,y):
 	x = str(round(x*scaleD))
 	y = str(round(y*scaleD))
@@ -121,10 +133,12 @@ def drawAnchor(name,x,y):
 		color = data['anchors'][name]
 		anchorStyle = 'r="3" fill="#' + color + '" stroke="none"'
 	return '<g class="anchor"><circle cx="' + x + '" cy="' + y + '" ' + anchorStyle + '/><text x="' + str(float(x)+6) + '" y="' + y + '" fill="#' + color + '">' + name + '</text></g>'
+
 def drawPoint(x,y,color,id):
 	x = str(round(x*scaleD)-2)
 	y = str(round(y*scaleD)-2)
 	return '<rect x="' + x + '" y="' + y + '" width="4" height="4" fill="#' + color + '"/><text x="' + str(float(x)+6) + '" y="' + str(float(y)+2) + '" fill="#' + color + '">' + str(id) + '</text>'
+
 def translate(scale,y):
 	xC = (max(data[glyph]['widths']) - g.width)/2 + data[glyph]['xL']
 	xL = (g.leftMargin * -1) + min(data[glyph]['lefts']) + data[glyph]['xL']
@@ -141,6 +155,9 @@ scale = 100
 colors = ['0af','f60','0c8','faa','fc0','b6f', '0af','f60','faa','0c8','fc0','b6f']
 colors1 = ['93f','fc0','f8c','0ab','f30','08f', '93f','fc0','f8c','0ab','f30','08f']
 colors2 = colors1[::-1]
+
+# disable Interface Updates in Glyphs
+#Glyphs.font.disableUpdateInterface()
 
 # reorder styles
 
@@ -236,8 +253,12 @@ for i in selection:
 		if isCompatible == False:
 			compatible = False
 
-		# draw glyphs
-		svgG += '<g transform="translate(' + str(offset) + ',-' + str(dB) + ')" class="glyph"><path d="' + svg(g) + '"/></g>'
+		# draw glyphs#
+		
+		if not 'z' in svg(g): ### if contours not closed, make color #777
+			svgG += '<g transform="translate(' + str(offset) + ',-' + str(dB) + ')" class="glyph"><path fill="#777" d="' + svg(g) + '"/></g>'
+		else:
+			svgG += '<g transform="translate(' + str(offset) + ',-' + str(dB) + ')" class="glyph"><path d="' + svg(g) + '"/></g>'
 
 		# draw metrics bars
 		if maxM == 0:
@@ -594,6 +615,9 @@ file = open(path,'w+')
 file.write(app)
 file.close()
 
+#enable Interface Updates for Glyph and show Macropanel
+#Glyphs.font.enableUpdateInterface()
+#Glyphs.showMacroWindow()
 
 # open
 
